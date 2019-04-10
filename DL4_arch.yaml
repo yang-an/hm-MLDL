@@ -2,7 +2,7 @@ backend: tensorflow
 class_name: Model
 config:
   input_layers:
-  - - input_9
+  - - input_11
     - 0
     - 0
   layers:
@@ -12,10 +12,10 @@ config:
       - null
       - 784
       dtype: float32
-      name: input_9
+      name: input_11
       sparse: false
     inbound_nodes: []
-    name: input_9
+    name: input_11
   - class_name: Dense
     config:
       activation: sigmoid
@@ -34,16 +34,16 @@ config:
           dtype: float32
           seed: null
       kernel_regularizer: null
-      name: dense_19
+      name: dense_25
       trainable: true
-      units: 400
+      units: 1000
       use_bias: true
     inbound_nodes:
-    - - - input_9
+    - - - input_11
         - 0
         - 0
         - {}
-    name: dense_19
+    name: dense_25
   - class_name: Dense
     config:
       activation: sigmoid
@@ -62,44 +62,16 @@ config:
           dtype: float32
           seed: null
       kernel_regularizer: null
-      name: dense_20
-      trainable: true
-      units: 100
-      use_bias: true
-    inbound_nodes:
-    - - - dense_19
-        - 0
-        - 0
-        - {}
-    name: dense_20
-  - class_name: Dense
-    config:
-      activation: sigmoid
-      activity_regularizer: null
-      bias_constraint: null
-      bias_initializer:
-        class_name: Zeros
-        config:
-          dtype: float32
-      bias_regularizer: null
-      dtype: float32
-      kernel_constraint: null
-      kernel_initializer:
-        class_name: GlorotUniform
-        config:
-          dtype: float32
-          seed: null
-      kernel_regularizer: null
-      name: dense_21
+      name: dense_26
       trainable: true
       units: 100
       use_bias: true
     inbound_nodes:
-    - - - dense_20
+    - - - dense_25
         - 0
         - 0
         - {}
-    name: dense_21
+    name: dense_26
   - class_name: Dense
     config:
       activation: softmax
@@ -118,19 +90,19 @@ config:
           dtype: float32
           seed: null
       kernel_regularizer: null
-      name: dense_22
+      name: dense_27
       trainable: true
       units: 10
       use_bias: true
     inbound_nodes:
-    - - - dense_21
+    - - - dense_26
         - 0
         - 0
         - {}
-    name: dense_22
-  name: model_8
+    name: dense_27
+  name: model_10
   output_layers:
-  - - dense_22
+  - - dense_27
     - 0
     - 0
 keras_version: 2.2.4-tf
