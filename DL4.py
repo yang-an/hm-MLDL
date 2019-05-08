@@ -46,7 +46,7 @@ n_classes = 10
 # TODO: define a function model() which returns the Keras model.
 # Which activiation function (= non-linearity) shall be used?
 def model():
-	inputs = tf.keras.layers.Input(shape=[n]) 
+	inputs = tf.keras.layers.Input(shape=[n_features]) 
 	y_pred = tf.keras.layers.Dense(N_CLASSES, activation='softmax')(inputs)
 	mdl = tf.keras.Model(inputs=inputs, outputs=y_pred)
 	return mdl
