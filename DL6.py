@@ -1,5 +1,6 @@
-
 import tensorflow as tf
+from tensorflow.keras import Sequential
+from tensorflow.keras.layers import Input, Dense, Conv2D, MaxPool2D, Flatten
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -41,11 +42,9 @@ classes = {0:'Airplane', 1:'Automobile', 2:'Bird', 3:'Cat', 4:'Deer',
 # - Rescale the pixel values to the scale 0..1
 # - recode the labels to one-hot-coding
 
+# Omit one-hot coding with logits
 x_train = x_train / 255
-y_train = tf.keras.utils.to_categorical(y_train)
-
 x_test = x_test / 255
-y_test = tf.keras.utils.to_categorical(y_test)
 
 ###########################
 
@@ -55,23 +54,58 @@ y_test = tf.keras.utils.to_categorical(y_test)
 # Which activiation function (= non-linearity) shall be used?
 def model():
 	
-	inputs = tf.keras.layers.Input(shape=x_train.shape[1:]) 
+	mdl = Sequential()
+
+	mdl.add(
+		Conv2D(
+			filters=N_C0,
+			kernel_size=3,
+			input_shape=x_train.shape[1:],
+			padding='valid',
+			activation='relu'
+		)
+	)
+	mdl.add(
+		MaxPool2D(
+			pool_size=3,
+			strides=2,
+			padding='valid'
+		)
+	)
+	mdl.add(
+		Conv2D(
+			filters=N_C1,
+			kernel_size=3,
+			padding='valid',
+			activation='relu'
+		)
+	)
+	mdl.add(
+		MaxPool2D(
+			pool_size=3,
+			strides=2,
+			padding='valid'
+		)
+	)
+	mdl.add(
+		Flatten()
+	)
+	mdl.add(
+		Dense(
+			units=N_D0,
+			activation='sigmoid')
+	)
+	mdl.add(
+		Dense(
+			units=N_D1,
+			activation='sigmoid')
+	)
+	mdl.add(
+		Dense(
+			units=N_CLASSES
+		)
+	)
 	
-	xc0 = tf.keras.layers.Conv2D(N_C0, WINDOW_SHAPE, strides=1, padding='valid')(inputs)
-	xa0 = tf.keras.layers.Activation('relu')(xc0)
-	xm0 = tf.keras.layers.MaxPool2D(pool_size=3, strides=2, padding='valid')(xc0)
-	
-	xc1 = tf.keras.layers.Conv2D(N_C1, WINDOW_SHAPE, strides=1, padding='valid')(xm0)
-	xa1 = tf.keras.layers.Activation('relu')(xc1)
-	xm1 = tf.keras.layers.MaxPool2D(pool_size=3, strides=2, padding='valid')(xc1)
-	
-	xf = tf.keras.layers.Flatten()(xm1)
-	
-	xd0 =  tf.keras.layers.Dense(N_D0, activation='sigmoid')(xf)
-	xd1 =  tf.keras.layers.Dense(N_D1, activation='sigmoid')(xd0)
-	y_pred = tf.keras.layers.Dense(N_CLASSES, activation='softmax')(xd1)
-	
-	mdl = tf.keras.Model(inputs=inputs, outputs=y_pred)
 	mdl.summary()
 	
 	return mdl
@@ -83,10 +117,18 @@ def model():
 # checking the accuracy, and storing the results to a history vector
 # TODO: include the code for training. Which loss function shall be used?
 mdl = model()
-opt = tf.keras.optimizers.Adam()
-mdl.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['acc'])
+
+mdl.compile(
+	optimizer=tf.keras.optimizers.Adam(),
+	loss=tf.keras.losses.CategoricalCrossentropy(from_logits=True),
+	metrics=['acc']
+)
+	
 history = mdl.fit(
-	x_train, y_train, batch_size=BATCH_SIZE, epochs=N_EPOCHS,
+	x_train,
+	y_train, 
+	batch_size=BATCH_SIZE,
+	epochs=N_EPOCHS,
 	validation_data=(x_test, y_test)
 )
 ###########################
