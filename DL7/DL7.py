@@ -84,8 +84,6 @@ for file in os.listdir(os.getcwd()):
 		txt = tf.keras.applications.vgg16.decode_predictions(pred, top=5)[0]
 
 		plot(img, txt)
-		
-		break
 
 ###########################
  
